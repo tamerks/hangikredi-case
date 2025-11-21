@@ -1,0 +1,34 @@
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import YemekAnaSayfa from '../screens/YemekAnaSayfa';
+import YemekSepet from '../screens/YemekSepet';
+
+const Stack = createNativeStackNavigator();
+
+export default function YemekStackNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#6200ee',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
+    >
+      <Stack.Screen
+        name="YemekAnaSayfa"
+        component={YemekAnaSayfa}
+        options={{ title: 'Yemek Siparişi' }}
+      />
+      <Stack.Screen
+        name="YemekSepet"
+        component={YemekSepet}
+        options={{ title: 'Yemek Sepeti' }}
+      />
+    </Stack.Navigator>
+  );
+}
+
