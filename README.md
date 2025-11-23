@@ -93,6 +93,60 @@ Uygulamayı gerçek cihazınızda test etmek için Expo Go kullanabilirsiniz:
    - İlk yükleme biraz zaman alabilir, sabırlı olun
    - Kod değişikliklerinde uygulama otomatik olarak yenilenecektir (Hot Reload)
 
+### 💻 Simülatör/Emulator ile Test Etme
+
+Uygulamayı bilgisayarınızda simülatör veya emulator kullanarak test edebilirsiniz:
+
+#### iOS Simulator (Sadece macOS)
+
+1. **Xcode'u yükleyin**
+   - App Store'dan Xcode'u indirin ve yükleyin
+   - Xcode Command Line Tools'u yükleyin: `xcode-select --install`
+
+2. **iOS Simulator'ı başlatın**
+   ```bash
+   npm run ios
+   ```
+   
+   Bu komut otomatik olarak:
+   - Expo development server'ı başlatır
+   - iOS Simulator'ı açar (eğer açık değilse)
+   - Uygulamayı simulator'da yükler
+
+3. **Manuel olarak simulator açmak isterseniz**
+   - Xcode'u açın
+   - `Xcode > Open Developer Tool > Simulator` menüsünden simulator'ı başlatın
+   - Ardından `npm start` çalıştırıp terminal'de `i` tuşuna basın
+
+#### Android Emulator
+
+1. **Android Studio'yu yükleyin**
+   - [Android Studio](https://developer.android.com/studio) indirin ve yükleyin
+   - Android SDK ve emulator'ı yükleyin
+
+2. **Android Emulator'ı başlatın**
+   ```bash
+   npm run android
+   ```
+   
+   Bu komut otomatik olarak:
+   - Expo development server'ı başlatır
+   - Android Emulator'ı açar (eğer açık değilse)
+   - Uygulamayı emulator'da yükler
+
+3. **Manuel olarak emulator açmak isterseniz**
+   - Android Studio'yu açın
+   - `Tools > Device Manager` menüsünden bir emulator oluşturun veya mevcut olanı başlatın
+   - Ardından `npm start` çalıştırıp terminal'de `a` tuşuna basın
+
+#### Expo Development Server Komutları
+
+`npm start` çalıştırdıktan sonra terminal'de şu komutları kullanabilirsiniz:
+- `a` - Android emulator'da aç
+- `i` - iOS simulator'da aç (sadece macOS)
+- `r` - Uygulamayı yeniden yükle
+- `m` - Metro bundler'ı menü modunda aç
+
 ## 🏗️ Mimari Açıklamalar
 
 ### Genel Mimari
