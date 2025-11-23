@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
+import { loginWithEmail } from '../services/authService';
 
 export default function LoginScreen({ navigation }) {
+  const [loading, setLoading] = useState(false);
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       email: '',
@@ -11,20 +13,33 @@ export default function LoginScreen({ navigation }) {
     },
   });
 
-  const onSubmit = (data) => {
-    // TODO: firebase auth
-    console.log('Login data:', data);
+  const onSubmit = async (data) => {
+    setLoading(true);
     
-    Toast.show({
-      type: 'success',
-      text1: 'Başarılı',
-      text2: 'Giriş yapılıyor...',
-      position: 'top',
-      visibilityTime: 2000,
-      onHide: () => {
-        navigation.replace('MainTabs');
-      },
-    });
+    const result = await loginWithEmail(data.email, data.password);
+    
+    setLoading(false);
+
+    if (result.success) {
+      Toast.show({
+        type: 'success',
+        text1: 'Başarılı',
+        text2: 'Giriş yapıldı',
+        position: 'top',
+        visibilityTime: 2000,
+        onHide: () => {
+          navigation.replace('MainTabs');
+        },
+      });
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Hata',
+        text2: result.error || 'Giriş yapılamadı',
+        position: 'top',
+        visibilityTime: 3000,
+      });
+    }
   };
 
   return (
@@ -90,10 +105,15 @@ export default function LoginScreen({ navigation }) {
         />
 
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, loading && styles.buttonDisabled]}
           onPress={handleSubmit(onSubmit)}
+          disabled={loading}
         >
-          <Text style={styles.buttonText}>Giriş Yap</Text>
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Giriş Yap</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -150,6 +170,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
 });
 
