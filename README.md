@@ -53,7 +53,13 @@ React Native Expo tabanlı mobil uygulama projesi. Kullanıcıların yemek sipar
    API_BASE_URL=https://www.tamerkose.com/api
    ```
 
-4. **Uygulamayı başlatın**
+4. **Giriş Bilgileri**
+   
+   Uygulamaya giriş yapmak için aşağıdaki test hesabını kullanabilirsiniz:
+   - **E-posta**: test@mail.com
+   - **Şifre**: 123456
+
+5. **Uygulamayı başlatın**
    ```bash
    npm start
    ```
