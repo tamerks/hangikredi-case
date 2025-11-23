@@ -1,19 +1,22 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem, selectYemekCartItems, selectYemekCartUniqueItemCount } from '../../redux/slices/yemekCartSlice';
 import Toast from 'react-native-toast-message';
-
-const menuItems = [
-  { id: '1', name: 'Pizza', price: 150 },
-  { id: '2', name: 'Burger', price: 120 },
-  { id: '3', name: 'Döner', price: 100 },
-];
+import apiService from '../../services/apiService';
+import { DefaultColors } from '../../constants/DefaultColors';
 
 export default function YemekAnaSayfa({ navigation }) {
   const dispatch = useDispatch();
   const cartItems = useSelector(selectYemekCartItems);
   const cartUniqueItemCount = useSelector(selectYemekCartUniqueItemCount);
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -34,6 +37,36 @@ export default function YemekAnaSayfa({ navigation }) {
       ),
     });
   }, [navigation, cartUniqueItemCount]);
+
+  const fetchMenuItems = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.get('/hangikredi.json');
+      
+      if (response.success && response.data) {
+        setMenuItems(response.data.yemek || []);
+      } else {
+        setError(response.error || 'Veriler yüklenemedi');
+        Toast.show({
+          type: 'error',
+          text1: 'Hata',
+          text2: response.error || 'Veriler yüklenemedi',
+          visibilityTime: 3000,
+        });
+      }
+    } catch (err) {
+      setError('Bir hata oluştu');
+      Toast.show({
+        type: 'error',
+        text1: 'Hata',
+        text2: 'Veriler yüklenirken bir hata oluştu',
+        visibilityTime: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getItemQuantity = (itemId) => {
     const item = cartItems.find(i => i.id === itemId);
@@ -69,49 +102,85 @@ export default function YemekAnaSayfa({ navigation }) {
     }
   };
 
-  return (
-    <ScrollView style={styles.container}>
+  const renderMenuItem = ({ item }) => {
+    const quantity = getItemQuantity(item.id);
+    return (
+      <View style={styles.menuItem}>
+        <View style={styles.menuItemInfo}>
+          <Text style={styles.menuItemText}>{item.name}</Text>
+          <Text style={styles.menuItemPrice}>₺{item.price}</Text>
+        </View>
+        {quantity === 0 ? (
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => handleAddToCart(item)}
+          >
+            <Text style={styles.addButtonText}>Sepete Ekle</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => handleDecrease(item.id)}
+            >
+              <Text style={styles.quantityButtonText}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantityText}>{quantity}</Text>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => handleIncrease(item)}
+            >
+              <Text style={styles.quantityButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  const renderHeader = () => (
+    <View>
       <Text style={styles.title}>Yemek Siparişi</Text>
       <Text style={styles.subtitle}>Lezzetli yemeklerimizi keşfedin</Text>
-      
-      <View style={styles.menuContainer}>
-        {menuItems.map((item) => {
-          const quantity = getItemQuantity(item.id);
-          return (
-            <View key={item.id} style={styles.menuItem}>
-              <View style={styles.menuItemInfo}>
-                <Text style={styles.menuItemText}>{item.name}</Text>
-                <Text style={styles.menuItemPrice}>₺{item.price}</Text>
-              </View>
-              {quantity === 0 ? (
-                <TouchableOpacity
-                  style={styles.addButton}
-                  onPress={() => handleAddToCart(item)}
-                >
-                  <Text style={styles.addButtonText}>Sepete Ekle</Text>
-                </TouchableOpacity>
-              ) : (
-                <View style={styles.quantityContainer}>
-                  <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={() => handleDecrease(item.id)}
-                  >
-                    <Text style={styles.quantityButtonText}>-</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.quantityText}>{quantity}</Text>
-                  <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={() => handleIncrease(item)}
-                  >
-                    <Text style={styles.quantityButtonText}>+</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          );
-        })}
+    </View>
+  );
+
+  const renderEmpty = () => (
+    <Text style={styles.emptyText}>Henüz yemek bulunmamaktadır.</Text>
+  );
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color={DefaultColors.primary} />
+        <Text style={styles.loadingText}>Yükleniyor...</Text>
       </View>
-    </ScrollView>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchMenuItems}>
+          <Text style={styles.retryButtonText}>Tekrar Dene</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={menuItems}
+        renderItem={renderMenuItem}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmpty}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
   );
 }
 
@@ -125,18 +194,18 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333',
+    color: DefaultColors.text,
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 30,
-    color: '#666',
+    color: DefaultColors.textSecondary,
   },
-  menuContainer: {
-    gap: 15,
+  listContent: {
+    paddingBottom: 20,
   },
   menuItem: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: DefaultColors.background,
     padding: 20,
     borderRadius: 8,
     marginBottom: 15,
@@ -148,7 +217,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   addButton: {
-    backgroundColor: '#6200ee',
+    backgroundColor: DefaultColors.primary,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -161,12 +230,12 @@ const styles = StyleSheet.create({
   menuItemText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: DefaultColors.text,
   },
   menuItemPrice: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#6200ee',
+    color: DefaultColors.primary,
   },
   headerRightContainer: {
     marginRight: 10,
@@ -190,7 +259,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 2,
     right: 2,
-    backgroundColor: '#f44336',
+    backgroundColor: DefaultColors.error,
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -198,7 +267,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 5,
     borderWidth: 2,
-    borderColor: '#6200ee',
+    borderColor: DefaultColors.primary,
     zIndex: 1,
   },
   badgeText: {
@@ -213,7 +282,7 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   quantityButton: {
-    backgroundColor: '#6200ee',
+    backgroundColor: DefaultColors.primary,
     width: 35,
     height: 35,
     borderRadius: 17.5,
@@ -230,7 +299,40 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     minWidth: 30,
     textAlign: 'center',
-    color: '#333',
+    color: DefaultColors.text,
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: DefaultColors.textSecondary,
+  },
+  errorText: {
+    fontSize: 16,
+    color: DefaultColors.error,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: DefaultColors.primary,
+    padding: 12,
+    borderRadius: 8,
+    paddingHorizontal: 24,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: DefaultColors.textSecondary,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 

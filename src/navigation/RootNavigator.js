@@ -4,6 +4,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import LoginScreen from '../screens/auth/LoginScreen';
 import MainTabNavigator from './MainTabNavigator';
 import { onAuthStateChange } from '../services/authService';
+import { DefaultColors } from '../constants/DefaultColors';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +24,7 @@ export default function RootNavigator() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6200ee" />
+        <ActivityIndicator size="large" color={DefaultColors.primary} />
       </View>
     );
   }

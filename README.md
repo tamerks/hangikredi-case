@@ -36,10 +36,11 @@ React Native Expo tabanlı mobil uygulama projesi. Kullanıcıların yemek sipar
    npm install
    ```
 
-3. **Firebase yapılandırması**
+3. **Environment yapılandırması**
    
-   Proje root dizininde `.env` dosyası oluşturun ve Firebase yapılandırma bilgilerinizi ekleyin:
+   Proje root dizininde `.env` dosyası oluşturun ve gerekli yapılandırma bilgilerinizi ekleyin:
    ```env
+   # Firebase yapılandırması
    FIREBASE_API_KEY=your_api_key
    FIREBASE_AUTH_DOMAIN=your_auth_domain
    FIREBASE_PROJECT_ID=your_project_id
@@ -47,6 +48,9 @@ React Native Expo tabanlı mobil uygulama projesi. Kullanıcıların yemek sipar
    FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
    FIREBASE_APP_ID=your_app_id
    FIREBASE_MEASUREMENT_ID=your_measurement_id
+   
+   # API Base URL
+   API_BASE_URL=https://www.tamerkose.com/api
    ```
 
 4. **Uygulamayı başlatın**
@@ -229,6 +233,35 @@ Firebase Authentication kullanılarak kullanıcı kimlik doğrulama yapılmaktad
 - `onAuthStateChange`: Kullanıcı giriş/çıkış durumunu dinler
 - RootNavigator, authentication durumuna göre yönlendirme yapar
 
+### API Integration
+
+Uygulama, yemek ve market verilerini harici bir API'den çekmektedir:
+
+- **API Endpoint**: `https://www.tamerkose.com/api/hangikredi.json`
+- **Base URL**: `.env` dosyasındaki `API_BASE_URL` değişkeninden alınır
+- **Veri Formatı**:
+  ```json
+  {
+    "yemek": [
+      { "id": "1", "name": "Pizza", "price": 150 },
+      ...
+    ],
+    "market": [
+      { "id": "1", "name": "Süt", "price": 25 },
+      ...
+    ]
+  }
+  ```
+- **Kullanım**: `YemekAnaSayfa` ve `MarketAnaSayfa` ekranları component mount olduğunda otomatik olarak API'den veri çeker
+- **Error Handling**: API hatalarında kullanıcıya bilgi verilir ve tekrar deneme imkanı sunulur
+
+### UI Components
+
+- **FlatList**: Yemek ve market listeleri için performanslı liste gösterimi
+  - `ListHeaderComponent`: Başlık ve alt başlık gösterimi
+  - `ListEmptyComponent`: Boş liste durumu
+  - `renderItem`: Her item için özel render fonksiyonu
+
 ### Folder Structure
 
 ```
@@ -313,7 +346,18 @@ Her slice, bağımsız bir state yönetimi modülüdür:
 ### Services
 
 - **authService.js**: Firebase authentication işlemleri
+  - `loginWithEmail`: Email/şifre ile giriş
+  - `signUpWithEmail`: Yeni kullanıcı kaydı
+  - `logout`: Çıkış yapma
+  - `getCurrentUser`: Mevcut kullanıcıyı getirme
+  - `onAuthStateChange`: Authentication durumu değişikliklerini dinleme
+
 - **apiService.js**: API çağrıları için merkezi servis
+  - Axios tabanlı HTTP client
+  - Firebase token ile otomatik authentication header ekleme
+  - Hata yönetimi ve response formatlama
+  - `get`, `post`, `put`, `patch`, `delete` metodları
+  - Base URL `.env` dosyasından (`API_BASE_URL`) alınır
 
 ### Screens
 
@@ -321,8 +365,16 @@ Her slice, bağımsız bir state yönetimi modülüdür:
 - **LoginScreen**: Kullanıcı giriş ekranı
 - **ProfilScreen**: Kullanıcı profil ekranı
 - **MarketAnaSayfa**: Market ürün listesi
+  - API'den (`/hangikredi.json`) market ürünlerini çeker
+  - FlatList ile performanslı liste gösterimi
+  - Loading ve error state yönetimi
+  - Sepete ekleme/çıkarma işlemleri
 - **MarketSepet**: Market sepet ekranı
 - **YemekAnaSayfa**: Yemek menü listesi
+  - API'den (`/hangikredi.json`) yemek menüsünü çeker
+  - FlatList ile performanslı liste gösterimi
+  - Loading ve error state yönetimi
+  - Sepete ekleme/çıkarma işlemleri
 - **YemekSepet**: Yemek sepet ekranı
 
 ## 🧪 Test
@@ -367,8 +419,11 @@ npm run test:watch # Testleri watch modunda çalıştırır
 ## 📝 Notlar
 
 - Firebase yapılandırması için `.env` dosyası oluşturulmalıdır
+- API Base URL `.env` dosyasında `API_BASE_URL` olarak tanımlanmalıdır
 - Redux Persist, sadece sepet verilerini kalıcı hale getirir
 - Uygulama, authentication durumuna göre otomatik yönlendirme yapar
+- Yemek ve market verileri API'den dinamik olarak çekilir
+- FlatList kullanımı ile uzun listelerde performans optimizasyonu sağlanır
 - Test dosyaları `__tests__` klasöründe organize edilmiştir
 
 ## 👥 Katkıda Bulunma

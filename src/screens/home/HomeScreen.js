@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { DefaultColors } from '../../constants/DefaultColors';
 
 export default function HomeScreen({ navigation }) {
   return (
@@ -38,25 +39,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
-    color: '#333',
+    color: DefaultColors.text,
   },
   subtitle: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 40,
-    color: '#666',
+    color: DefaultColors.textSecondary,
   },
   buttonContainer: {
     gap: 15,
   },
   button: {
-    backgroundColor: '#6200ee',
+    backgroundColor: DefaultColors.primary,
     padding: 18,
     borderRadius: 8,
     alignItems: 'center',
   },
   marketButton: {
-    backgroundColor: '#03a9f4',
+    backgroundColor: DefaultColors.secondary,
   },
   buttonText: {
     color: '#fff',

@@ -98,3 +98,12 @@ export const getCurrentUser = () => {
   return auth.currentUser;
 };
 
+const authService = {
+  loginWithEmail,
+  signUpWithEmail,
+  logout,
+  onAuthStateChange,
+  getCurrentUser,
+};
+
+export default authService;
