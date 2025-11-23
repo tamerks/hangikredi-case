@@ -8,6 +8,7 @@ import { View, ActivityIndicator } from 'react-native';
 import Toast from 'react-native-toast-message';
 import RootNavigator from './src/navigation/RootNavigator';
 import { store, persistor } from './src/redux/store';
+import { DefaultColors } from './src/constants/DefaultColors';
 
 export default function App() {
   return (
@@ -15,7 +16,7 @@ export default function App() {
       <PersistGate 
         loading={
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color="#6200ee" />
+            <ActivityIndicator size="large" color={DefaultColors.primary} />
           </View>
         }
         persistor={persistor}

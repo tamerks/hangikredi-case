@@ -6,6 +6,7 @@ import HomeScreen from '../screens/home/HomeScreen';
 import ProfilScreen from '../screens/profile/ProfilScreen';
 import YemekStackNavigator from './YemekStackNavigator';
 import MarketStackNavigator from './MarketStackNavigator';
+import { DefaultColors } from '../constants/DefaultColors';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,8 +17,8 @@ export default function MainTabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#6200ee',
-        tabBarInactiveTintColor: '#666',
+        tabBarActiveTintColor: DefaultColors.primary,
+        tabBarInactiveTintColor: DefaultColors.textSecondary,
         tabBarStyle: {
           paddingBottom: Math.max(insets.bottom, 5),
           paddingTop: 5,

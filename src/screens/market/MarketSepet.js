@@ -10,6 +10,7 @@ import {
   selectMarketCartTotal 
 } from '../../redux/slices/marketCartSlice';
 import Toast from 'react-native-toast-message';
+import { DefaultColors } from '../../constants/DefaultColors';
 
 export default function MarketSepet({ navigation }) {
   const dispatch = useDispatch();
@@ -144,18 +145,18 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333',
+    color: DefaultColors.text,
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 30,
-    color: '#666',
+    color: DefaultColors.textSecondary,
   },
   scrollView: {
     flex: 1,
   },
   sepetContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: DefaultColors.background,
     padding: 20,
     borderRadius: 8,
     marginBottom: 20,
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: DefaultColors.border,
   },
   itemInfo: {
     flex: 1,
@@ -174,12 +175,12 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: DefaultColors.text,
     marginBottom: 5,
   },
   itemPrice: {
     fontSize: 14,
-    color: '#666',
+    color: DefaultColors.textSecondary,
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   quantityButton: {
-    backgroundColor: '#03a9f4',
+    backgroundColor: DefaultColors.secondary,
     width: 30,
     height: 30,
     borderRadius: 15,
@@ -204,10 +205,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     minWidth: 30,
     textAlign: 'center',
-    color: '#333',
+    color: DefaultColors.text,
   },
   removeButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: DefaultColors.error,
     width: 30,
     height: 30,
     borderRadius: 15,
@@ -227,21 +228,21 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    color: '#666',
+    color: DefaultColors.textSecondary,
   },
   totalContainer: {
     paddingVertical: 15,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: DefaultColors.border,
   },
   total: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#03a9f4',
+    color: DefaultColors.secondary,
     textAlign: 'right',
   },
   button: {
-    backgroundColor: '#03a9f4',
+    backgroundColor: DefaultColors.secondary,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',

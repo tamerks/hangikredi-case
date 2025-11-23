@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 import { logout, getCurrentUser } from '../../services/authService';
 import { clearCart as clearYemekCart } from '../../redux/slices/yemekCartSlice';
 import { clearCart as clearMarketCart } from '../../redux/slices/marketCartSlice';
+import { DefaultColors } from '../../constants/DefaultColors';
 
 export default function ProfilScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -77,16 +78,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
-    color: '#333',
+    color: DefaultColors.text,
   },
   subtitle: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 40,
-    color: '#666',
+    color: DefaultColors.textSecondary,
   },
   logoutButton: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: DefaultColors.error,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   userInfo: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: DefaultColors.background,
     padding: 16,
     borderRadius: 8,
     marginBottom: 20,
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 16,
-    color: '#333',
+    color: DefaultColors.text,
     fontWeight: '500',
   },
 });

@@ -10,6 +10,7 @@ import {
   selectYemekCartTotal 
 } from '../../redux/slices/yemekCartSlice';
 import Toast from 'react-native-toast-message';
+import { DefaultColors } from '../../constants/DefaultColors';
 
 export default function YemekSepet({ navigation }) {
   const dispatch = useDispatch();
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   quantityButton: {
-    backgroundColor: '#6200ee',
+    backgroundColor: DefaultColors.primary,
     width: 30,
     height: 30,
     borderRadius: 15,
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   removeButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: DefaultColors.error,
     width: 30,
     height: 30,
     borderRadius: 15,
@@ -248,11 +249,11 @@ const styles = StyleSheet.create({
   total: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#6200ee',
+    color: DefaultColors.primary,
     textAlign: 'right',
   },
   button: {
-    backgroundColor: '#6200ee',
+    backgroundColor: DefaultColors.primary,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
