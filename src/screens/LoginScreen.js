@@ -25,7 +25,6 @@ export default function LoginScreen({ navigation }) {
         type: 'success',
         text1: 'Başarılı',
         text2: 'Giriş yapıldı',
-        position: 'top',
         visibilityTime: 2000,
         onHide: () => {
           navigation.replace('MainTabs');
@@ -36,8 +35,7 @@ export default function LoginScreen({ navigation }) {
         type: 'error',
         text1: 'Hata',
         text2: result.error || 'Giriş yapılamadı',
-        position: 'top',
-        visibilityTime: 3000,
+        visibilityTime: 2000,
       });
     }
   };

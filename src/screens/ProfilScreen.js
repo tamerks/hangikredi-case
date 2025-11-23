@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import { logout, getCurrentUser } from '../services/authService';
+import { clearCart as clearYemekCart } from '../redux/slices/yemekCartSlice';
+import { clearCart as clearMarketCart } from '../redux/slices/marketCartSlice';
 
 export default function ProfilScreen({ navigation }) {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const user = getCurrentUser();
 
   const handleLogout = async () => {
     setLoading(true);
+    
+    dispatch(clearYemekCart());
+    dispatch(clearMarketCart());
     
     const result = await logout();
     
@@ -19,7 +26,6 @@ export default function ProfilScreen({ navigation }) {
         type: 'success',
         text1: 'Başarılı',
         text2: 'Çıkış yapıldı',
-        position: 'top',
         visibilityTime: 2000,
       });
       navigation.replace('Login');
@@ -28,8 +34,7 @@ export default function ProfilScreen({ navigation }) {
         type: 'error',
         text1: 'Hata',
         text2: result.error || 'Çıkış yapılamadı',
-        position: 'top',
-        visibilityTime: 3000,
+        visibilityTime: 2000,
       });
     }
   };
