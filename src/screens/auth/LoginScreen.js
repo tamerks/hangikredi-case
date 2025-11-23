@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
-import { loginWithEmail } from '../services/authService';
+import { loginWithEmail } from '../../services/authService';
 
 export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);

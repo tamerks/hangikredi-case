@@ -8,7 +8,7 @@ import {
   clearCart,
   selectMarketCartItems,
   selectMarketCartTotal 
-} from '../redux/slices/marketCartSlice';
+} from '../../redux/slices/marketCartSlice';
 import Toast from 'react-native-toast-message';
 
 export default function MarketSepet({ navigation }) {

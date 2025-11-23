@@ -2,8 +2,8 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import HomeScreen from '../screens/HomeScreen';
-import ProfilScreen from '../screens/ProfilScreen';
+import HomeScreen from '../screens/home/HomeScreen';
+import ProfilScreen from '../screens/profile/ProfilScreen';
 import YemekStackNavigator from './YemekStackNavigator';
 import MarketStackNavigator from './MarketStackNavigator';
 
