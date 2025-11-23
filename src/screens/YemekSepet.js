@@ -1,26 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { CommonActions } from '@react-navigation/native';
 
 export default function YemekSepet({ navigation }) {
   const handleComplete = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'MainTabs',
-            state: {
-              routes: [
-                {
-                  name: 'Home',
-                },
-              ],
-            },
+    navigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'MainTabs',
+          state: {
+            routes: [
+              {
+                name: 'Home',
+              },
+            ],
           },
-        ],
-      })
-    );
+        },
+      ],
+    });
   };
 
   return (
