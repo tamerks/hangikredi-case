@@ -8,7 +8,7 @@ import {
   clearCart,
   selectYemekCartItems,
   selectYemekCartTotal 
-} from '../redux/slices/yemekCartSlice';
+} from '../../redux/slices/yemekCartSlice';
 import Toast from 'react-native-toast-message';
 
 export default function YemekSepet({ navigation }) {

@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, removeItem, selectYemekCartItems, selectYemekCartUniqueItemCount } from '../redux/slices/yemekCartSlice';
+import { addItem, removeItem, selectMarketCartItems, selectMarketCartUniqueItemCount } from '../../redux/slices/marketCartSlice';
 import Toast from 'react-native-toast-message';
 
-const menuItems = [
-  { id: '1', name: 'Pizza', price: 150 },
-  { id: '2', name: 'Burger', price: 120 },
-  { id: '3', name: 'Döner', price: 100 },
+const products = [
+  { id: '1', name: 'Süt', price: 25 },
+  { id: '2', name: 'Ekmek', price: 15 },
+  { id: '3', name: 'Yumurta', price: 45 },
 ];
 
-export default function YemekAnaSayfa({ navigation }) {
+export default function MarketAnaSayfa({ navigation }) {
   const dispatch = useDispatch();
-  const cartItems = useSelector(selectYemekCartItems);
-  const cartUniqueItemCount = useSelector(selectYemekCartUniqueItemCount);
+  const cartItems = useSelector(selectMarketCartItems);
+  const cartUniqueItemCount = useSelector(selectMarketCartUniqueItemCount);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <View style={styles.headerRightContainer}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('YemekSepet')}
+            onPress={() => navigation.navigate('MarketSepet')}
             style={styles.cartButton}
           >
             <Text style={styles.cartIcon}>🛒</Text>
@@ -57,6 +57,7 @@ export default function YemekAnaSayfa({ navigation }) {
   const handleDecrease = (itemId) => {
     const item = cartItems.find(i => i.id === itemId);
     if (item && item.quantity === 1) {
+      // Ürün sepetten tamamen çıkarılacak
       dispatch(removeItem(itemId));
       Toast.show({
         type: 'info',
@@ -71,17 +72,17 @@ export default function YemekAnaSayfa({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Yemek Siparişi</Text>
-      <Text style={styles.subtitle}>Lezzetli yemeklerimizi keşfedin</Text>
+      <Text style={styles.title}>Market Alışverişi</Text>
+      <Text style={styles.subtitle}>Taze ürünlerimizi keşfedin</Text>
       
-      <View style={styles.menuContainer}>
-        {menuItems.map((item) => {
+      <View style={styles.productContainer}>
+        {products.map((item) => {
           const quantity = getItemQuantity(item.id);
           return (
-            <View key={item.id} style={styles.menuItem}>
-              <View style={styles.menuItemInfo}>
-                <Text style={styles.menuItemText}>{item.name}</Text>
-                <Text style={styles.menuItemPrice}>₺{item.price}</Text>
+            <View key={item.id} style={styles.productItem}>
+              <View style={styles.productItemInfo}>
+                <Text style={styles.productItemText}>{item.name}</Text>
+                <Text style={styles.productItemPrice}>₺{item.price}</Text>
               </View>
               {quantity === 0 ? (
                 <TouchableOpacity
@@ -132,23 +133,23 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     color: '#666',
   },
-  menuContainer: {
+  productContainer: {
     gap: 15,
   },
-  menuItem: {
+  productItem: {
     backgroundColor: '#f5f5f5',
     padding: 20,
     borderRadius: 8,
     marginBottom: 15,
   },
-  menuItemInfo: {
+  productItemInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
   },
   addButton: {
-    backgroundColor: '#6200ee',
+    backgroundColor: '#03a9f4',
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -158,15 +159,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  menuItemText: {
+  productItemText: {
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
   },
-  menuItemPrice: {
+  productItemPrice: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#6200ee',
+    color: '#03a9f4',
   },
   headerRightContainer: {
     marginRight: 10,
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 5,
     borderWidth: 2,
-    borderColor: '#6200ee',
+    borderColor: '#03a9f4',
     zIndex: 1,
   },
   badgeText: {
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   quantityButton: {
-    backgroundColor: '#6200ee',
+    backgroundColor: '#03a9f4',
     width: 35,
     height: 35,
     borderRadius: 17.5,

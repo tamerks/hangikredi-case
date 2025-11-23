@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
-import { logout, getCurrentUser } from '../services/authService';
-import { clearCart as clearYemekCart } from '../redux/slices/yemekCartSlice';
-import { clearCart as clearMarketCart } from '../redux/slices/marketCartSlice';
+import { logout, getCurrentUser } from '../../services/authService';
+import { clearCart as clearYemekCart } from '../../redux/slices/yemekCartSlice';
+import { clearCart as clearMarketCart } from '../../redux/slices/marketCartSlice';
 
 export default function ProfilScreen({ navigation }) {
   const dispatch = useDispatch();

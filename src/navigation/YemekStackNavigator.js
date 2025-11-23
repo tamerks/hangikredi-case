@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import YemekAnaSayfa from '../screens/YemekAnaSayfa';
-import YemekSepet from '../screens/YemekSepet';
+import YemekAnaSayfa from '../screens/yemek/YemekAnaSayfa';
+import YemekSepet from '../screens/yemek/YemekSepet';
 
 const Stack = createNativeStackNavigator();
 

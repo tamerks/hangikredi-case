@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MarketAnaSayfa from '../screens/MarketAnaSayfa';
-import MarketSepet from '../screens/MarketSepet';
+import MarketAnaSayfa from '../screens/market/MarketAnaSayfa';
+import MarketSepet from '../screens/market/MarketSepet';
 
 const Stack = createNativeStackNavigator();
 
