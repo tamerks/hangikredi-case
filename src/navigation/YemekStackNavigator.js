@@ -17,6 +17,7 @@ export default function YemekStackNavigator() {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerBackTitleVisible: false,
       }}
     >
       <Stack.Screen

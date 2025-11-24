@@ -38,20 +38,13 @@ React Native Expo tabanlı mobil uygulama projesi. Kullanıcıların yemek sipar
 
 3. **Environment yapılandırması**
    
-   Proje root dizininde `.env` dosyası oluşturun ve gerekli yapılandırma bilgilerinizi ekleyin:
-   ```env
-   # Firebase yapılandırması
-   FIREBASE_API_KEY=your_api_key
-   FIREBASE_AUTH_DOMAIN=your_auth_domain
-   FIREBASE_PROJECT_ID=your_project_id
-   FIREBASE_STORAGE_BUCKET=your_storage_bucket
-   FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-   FIREBASE_APP_ID=your_app_id
-   FIREBASE_MEASUREMENT_ID=your_measurement_id
-   
-   # API Base URL
-   API_BASE_URL=https://www.tamerkose.com/api
+   `.env` dosyanızı oluşturmanın en hızlı yolu:
+   ```bash
+   cp env.example .env
    ```
+   Ardından kendi Firebase ve API bilgilerinizi girin. Bu değerler `app.config.js` üzerinden Expo `extra` alanına aktarılır ve tüm platformlarda (Android, iOS, Web) aynı şekilde kullanılır.
+   
+   > 💡 Yeni bir makinede projeyi ilk kez açıyorsanız `expo start -c` komutu ile Metro önbelleğini temizleyip environment değişkenlerinin doğru şekilde yüklendiğinden emin olun.
 
 4. **Giriş Bilgileri**
    

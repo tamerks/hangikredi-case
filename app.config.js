@@ -1,0 +1,55 @@
+import 'dotenv/config';
+
+const {
+  FIREBASE_API_KEY = '',
+  FIREBASE_AUTH_DOMAIN = '',
+  FIREBASE_PROJECT_ID = '',
+  FIREBASE_STORAGE_BUCKET = '',
+  FIREBASE_MESSAGING_SENDER_ID = '',
+  FIREBASE_APP_ID = '',
+  FIREBASE_MEASUREMENT_ID = '',
+  API_BASE_URL = 'https://www.tamerkose.com/api',
+} = process.env;
+
+export default {
+  expo: {
+    name: 'hangikredi-case',
+    slug: 'hangikredi-case',
+    version: '1.0.0',
+    orientation: 'portrait',
+    icon: './assets/icon.png',
+    userInterfaceStyle: 'light',
+    newArchEnabled: true,
+    splash: {
+      image: './assets/splash-icon.png',
+      resizeMode: 'contain',
+      backgroundColor: '#ffffff',
+    },
+    ios: {
+      supportsTablet: true,
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
+        backgroundColor: '#ffffff',
+      },
+      edgeToEdgeEnabled: true,
+    },
+    web: {
+      favicon: './assets/favicon.png',
+    },
+    extra: {
+      firebase: {
+        apiKey: FIREBASE_API_KEY,
+        authDomain: FIREBASE_AUTH_DOMAIN,
+        projectId: FIREBASE_PROJECT_ID,
+        storageBucket: FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+        appId: FIREBASE_APP_ID,
+        measurementId: FIREBASE_MEASUREMENT_ID,
+      },
+      apiBaseUrl: API_BASE_URL,
+    },
+  },
+};
+

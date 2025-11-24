@@ -1,8 +1,14 @@
 import axios from 'axios';
+import Constants from 'expo-constants';
 import authService from './authService';
-import { API_BASE_URL } from '@env';
 
-const BASE_URL = API_BASE_URL || 'https://api.example.com/v1';
+const extra =
+  Constants?.expoConfig?.extra ??
+  Constants?.manifest?.extra ??
+  Constants?.manifest2?.extra ??
+  {};
+
+const BASE_URL = extra?.apiBaseUrl || 'https://www.tamerkose.com/api';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,

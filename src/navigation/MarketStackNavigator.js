@@ -16,6 +16,7 @@ export default function MarketStackNavigator() {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerBackTitleVisible: false,
       }}
     >
       <Stack.Screen
