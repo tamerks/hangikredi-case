@@ -1,147 +1,156 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  StyleSheet, 
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
   ActivityIndicator,
   KeyboardAvoidingView,
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform
-} from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import Toast from 'react-native-toast-message';
-import { loginWithEmail } from '../../services/authService';
-import { DefaultColors } from '../../constants/DefaultColors';
+  Platform,
+} from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import Toast from "react-native-toast-message";
+import { loginWithEmail } from "../../services/authService";
+import { Theme, Typography, Spacing, Radius } from "../../constants/Theme";
 
 export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { control, handleSubmit, formState: { errors } } = useForm({
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   const onSubmit = async (data) => {
     setLoading(true);
-    
     const result = await loginWithEmail(data.email, data.password);
-    
     setLoading(false);
 
     if (result.success) {
       Toast.show({
-        type: 'success',
-        text1: 'Başarılı',
-        text2: 'Giriş yapıldı',
+        type: "success",
+        text1: "Hoş Geldiniz",
+        text2: "Giriş başarılı",
         visibilityTime: 2000,
-        onHide: () => {
-          navigation.replace('MainTabs');
-        },
+        onHide: () => navigation.replace("MainTabs"),
       });
     } else {
       Toast.show({
-        type: 'error',
-        text1: 'Hata',
-        text2: result.error || 'Giriş yapılamadı',
-        visibilityTime: 2000,
+        type: "error",
+        text1: "Hata",
+        text2: result.error || "Giriş yapılamadı",
+        visibilityTime: 3000,
       });
     }
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.title}>Giriş Yap</Text>
-          
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Giriş Yap</Text>
+            <Text style={styles.subtitle}>Hesabınıza giriş yapın</Text>
+          </View>
+
+          {/* Form */}
           <View style={styles.form}>
-            <Controller
-              control={control}
-              rules={{
-                required: 'E-posta adresi gereklidir',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Geçerli bir e-posta adresi giriniz',
-                },
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <View style={styles.inputContainer}>
-                  <Text style={styles.label}>E-posta</Text>
+            {/* Email */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>E-posta</Text>
+              <Controller
+                control={control}
+                rules={{
+                  required: "E-posta gereklidir",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Geçerli bir e-posta giriniz",
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, errors.email && styles.inputError]}
                     placeholder="ornek@email.com"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
+                    placeholderTextColor={Theme.mutedForeground}
                     value={value}
+                    onChangeText={onChange}
                     keyboardType="email-address"
                     autoCapitalize="none"
                   />
-                  {errors.email && (
-                    <Text style={styles.errorText}>{errors.email.message}</Text>
-                  )}
-                </View>
+                )}
+                name="email"
+              />
+              {errors.email && (
+                <Text style={styles.errorText}>{errors.email.message}</Text>
               )}
-              name="email"
-            />
+            </View>
 
-            <Controller
-              control={control}
-              rules={{
-                required: 'Şifre gereklidir',
-                minLength: {
-                  value: 6,
-                  message: 'Şifre en az 6 karakter olmalıdır',
-                },
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <View style={styles.inputContainer}>
-                  <Text style={styles.label}>Şifre</Text>
+            {/* Password */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Şifre</Text>
+              <Controller
+                control={control}
+                rules={{
+                  required: "Şifre gereklidir",
+                  minLength: { value: 6, message: "En az 6 karakter" },
+                }}
+                render={({ field: { onChange, value } }) => (
                   <View style={styles.passwordContainer}>
                     <TextInput
-                      style={styles.passwordInput}
-                      placeholder="Şifrenizi giriniz"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
+                      style={[
+                        styles.passwordInput,
+                        errors.password && styles.inputError,
+                      ]}
+                      placeholder="••••••"
+                      placeholderTextColor={Theme.mutedForeground}
                       value={value}
+                      onChangeText={onChange}
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity
                       style={styles.eyeButton}
                       onPress={() => setShowPassword(!showPassword)}
                     >
-                      <Text style={styles.eyeIcon}>
-                        {showPassword ? '👁️' : '👁️‍🗨️'}
+                      <Text style={styles.eyeText}>
+                        {showPassword ? "Gizle" : "Göster"}
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  {errors.password && (
-                    <Text style={styles.errorText}>{errors.password.message}</Text>
-                  )}
-                </View>
+                )}
+                name="password"
+              />
+              {errors.password && (
+                <Text style={styles.errorText}>{errors.password.message}</Text>
               )}
-              name="password"
-            />
+            </View>
 
+            {/* Submit Button */}
             <TouchableOpacity
               style={[styles.button, loading && styles.buttonDisabled]}
               onPress={handleSubmit(onSubmit)}
               disabled={loading}
+              activeOpacity={0.8}
             >
               {loading ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color={Theme.primaryForeground} />
               ) : (
                 <Text style={styles.buttonText}>Giriş Yap</Text>
               )}
@@ -156,80 +165,95 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Theme.background,
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
-    padding: 20,
+    justifyContent: "center",
+    padding: Spacing.xl,
+  },
+  header: {
+    marginBottom: Spacing.xxl,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 40,
-    color: DefaultColors.text,
+    fontSize: Typography.size.display,
+    fontFamily: Typography.family.bold,
+    color: Theme.foreground,
+    marginBottom: Spacing.xs,
+  },
+  subtitle: {
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.regular,
+    color: Theme.mutedForeground,
   },
   form: {
-    width: '100%',
+    gap: Spacing.lg,
   },
-  inputContainer: {
-    marginBottom: 20,
+  inputGroup: {
+    gap: Spacing.sm,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: DefaultColors.text,
+    fontSize: Typography.size.sm,
+    fontFamily: Typography.family.medium,
+    color: Theme.foreground,
   },
   input: {
+    backgroundColor: Theme.background,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    borderColor: Theme.border,
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.regular,
+    color: Theme.foreground,
+  },
+  inputError: {
+    borderColor: Theme.destructive,
   },
   passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Theme.background,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    backgroundColor: '#f9f9f9',
+    borderColor: Theme.border,
+    borderRadius: Radius.md,
   },
   passwordInput: {
     flex: 1,
-    padding: 12,
-    fontSize: 16,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.regular,
+    color: Theme.foreground,
+    borderWidth: 0,
   },
   eyeButton: {
-    padding: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
   },
-  eyeIcon: {
-    fontSize: 20,
+  eyeText: {
+    fontSize: Typography.size.sm,
+    fontFamily: Typography.family.medium,
+    color: Theme.mutedForeground,
   },
   errorText: {
-    color: DefaultColors.error,
-    fontSize: 12,
-    marginTop: 4,
+    fontSize: Typography.size.xs,
+    fontFamily: Typography.family.regular,
+    color: Theme.destructive,
   },
   button: {
-    backgroundColor: DefaultColors.primary,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    backgroundColor: Theme.primary,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.md,
+    alignItems: "center",
+    marginTop: Spacing.md,
   },
   buttonDisabled: {
     opacity: 0.6,
   },
+  buttonText: {
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.semiBold,
+    color: Theme.primaryForeground,
+  },
 });
-

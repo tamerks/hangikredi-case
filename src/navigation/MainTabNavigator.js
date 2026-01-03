@@ -1,28 +1,45 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import HomeScreen from '../screens/home/HomeScreen';
-import ProfilScreen from '../screens/profile/ProfilScreen';
-import YemekStackNavigator from './YemekStackNavigator';
-import MarketStackNavigator from './MarketStackNavigator';
-import { DefaultColors } from '../constants/DefaultColors';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { View, Platform, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Home, ShoppingBag, ShoppingCart, User } from "lucide-react-native";
+import HomeScreen from "../screens/home/HomeScreen";
+// import ProfilScreen from "../screens/profile/ProfilScreen"; // Replaced by Stack
+import ProfileStackNavigator from "./ProfileStackNavigator";
+import YemekStackNavigator from "./YemekStackNavigator";
+import MarketStackNavigator from "./MarketStackNavigator";
+import {
+  Theme,
+  Spacing,
+  Shadows,
+  Radius,
+  Typography,
+} from "../constants/Theme";
 
 const Tab = createBottomTabNavigator();
 
 export default function MainTabNavigator() {
   const insets = useSafeAreaInsets();
-  
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: DefaultColors.primary,
-        tabBarInactiveTintColor: DefaultColors.textSecondary,
+        tabBarActiveTintColor: Theme.primary,
+        tabBarInactiveTintColor: Theme.mutedForeground,
         tabBarStyle: {
-          paddingBottom: Math.max(insets.bottom, 5),
-          paddingTop: 5,
-          height: 60 + Math.max(insets.bottom - 5, 0),
+          backgroundColor: Theme.background,
+          borderTopColor: Theme.border,
+          borderTopWidth: 1,
+          height: Platform.OS === "ios" ? 88 : 68,
+          paddingTop: Spacing.sm,
+          paddingBottom: Platform.OS === "ios" ? insets.bottom : Spacing.md,
+          elevation: 0,
+        },
+        tabBarLabelStyle: {
+          fontFamily: Typography.family.medium,
+          fontSize: 12,
+          marginTop: -4,
         },
       }}
     >
@@ -30,9 +47,9 @@ export default function MainTabNavigator() {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Ana Sayfa',
+          tabBarLabel: "Ana Sayfa",
           tabBarIcon: ({ color, size }) => (
-            <Text style={{ color, fontSize: size }}>🏠</Text>
+            <Home size={24} color={color} strokeWidth={2} />
           ),
         }}
       />
@@ -40,9 +57,9 @@ export default function MainTabNavigator() {
         name="Yemek"
         component={YemekStackNavigator}
         options={{
-          tabBarLabel: 'Yemek',
+          tabBarLabel: "Yemek",
           tabBarIcon: ({ color, size }) => (
-            <Text style={{ color, fontSize: size }}>🍕</Text>
+            <ShoppingBag size={24} color={color} strokeWidth={2} />
           ),
         }}
       />
@@ -50,23 +67,22 @@ export default function MainTabNavigator() {
         name="Market"
         component={MarketStackNavigator}
         options={{
-          tabBarLabel: 'Market',
+          tabBarLabel: "Market",
           tabBarIcon: ({ color, size }) => (
-            <Text style={{ color, fontSize: size }}>🛒</Text>
+            <ShoppingCart size={24} color={color} strokeWidth={2} />
           ),
         }}
       />
       <Tab.Screen
         name="Profil"
-        component={ProfilScreen}
+        component={ProfileStackNavigator}
         options={{
-          tabBarLabel: 'Profil',
+          tabBarLabel: "Profil",
           tabBarIcon: ({ color, size }) => (
-            <Text style={{ color, fontSize: size }}>👤</Text>
+            <User size={24} color={color} strokeWidth={2} />
           ),
         }}
       />
     </Tab.Navigator>
   );
 }
-

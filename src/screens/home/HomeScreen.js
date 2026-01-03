@@ -1,68 +1,141 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { DefaultColors } from '../../constants/DefaultColors';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { getCurrentUser } from "../../services/authService";
+import {
+  Theme,
+  Typography,
+  Spacing,
+  Radius,
+  Shadows,
+} from "../../constants/Theme";
+
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+  const user = getCurrentUser();
+  const userName = user?.email?.split("@")[0] || "Misafir";
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Ana Sayfa</Text>
-      <Text style={styles.subtitle}>Hoş geldiniz!</Text>
-      
-      <View style={styles.buttonContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[
+        styles.content,
+        { paddingTop: insets.top + Spacing.xl },
+      ]}
+    >
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Merhaba,</Text>
+        <Text style={styles.userName}>{userName}</Text>
+      </View>
+
+      {/* Services */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Ne yapmak istersiniz?</Text>
+
         <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Yemek', { screen: 'YemekAnaSayfa' })}
+          style={styles.card}
+          onPress={() =>
+            navigation.navigate("Yemek", { screen: "YemekAnaSayfa" })
+          }
+          activeOpacity={0.7}
         >
-          <Text style={styles.buttonText}>Yemek Siparişi</Text>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardTitle}>Yemek Siparişi</Text>
+            <Text style={styles.cardSubtitle}>
+              Restoran menülerini keşfedin
+            </Text>
+          </View>
+          <Text style={styles.cardArrow}>→</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
-          style={[styles.button, styles.marketButton]}
-          onPress={() => navigation.navigate('Market', { screen: 'MarketAnaSayfa' })}
+          style={styles.card}
+          onPress={() =>
+            navigation.navigate("Market", { screen: "MarketAnaSayfa" })
+          }
+          activeOpacity={0.7}
         >
-          <Text style={styles.buttonText}>Market Alışverişi</Text>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardTitle}>Market Alışverişi</Text>
+            <Text style={styles.cardSubtitle}>
+              Günlük ihtiyaçlarınızı sipariş edin
+            </Text>
+          </View>
+          <Text style={styles.cardArrow}>→</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-    justifyContent: 'center',
+    backgroundColor: Theme.background,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-    color: DefaultColors.text,
+  content: {
+    padding: Spacing.xl,
   },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 40,
-    color: DefaultColors.textSecondary,
+  header: {
+    marginBottom: Spacing.xxl,
+    flexDirection: "row",
+    alignItems: "center",
   },
-  buttonContainer: {
-    gap: 15,
+  greeting: {
+    fontSize: Typography.size.xxl,
+    fontFamily: Typography.family.regular,
+    color: Theme.mutedForeground,
+    marginRight: Spacing.xs,
   },
-  button: {
-    backgroundColor: DefaultColors.primary,
-    padding: 18,
-    borderRadius: 8,
-    alignItems: 'center',
+  userName: {
+    fontSize: Typography.size.xxl,
+    fontFamily: Typography.family.bold,
+    color: Theme.foreground,
   },
-  marketButton: {
-    backgroundColor: DefaultColors.secondary,
+  section: {
+    gap: Spacing.md,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  sectionTitle: {
+    fontSize: Typography.size.lg,
+    fontFamily: Typography.family.semiBold,
+    color: Theme.foreground,
+    marginBottom: Spacing.sm,
+  },
+  card: {
+    backgroundColor: Theme.card,
+    borderWidth: 1,
+    borderColor: Theme.border,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    ...Shadows.sm,
+  },
+  cardContent: {
+    flex: 1,
+  },
+  cardTitle: {
+    fontSize: Typography.size.lg,
+    fontFamily: Typography.family.semiBold,
+    color: Theme.foreground,
+    marginBottom: Spacing.xs,
+  },
+  cardSubtitle: {
+    fontSize: Typography.size.sm,
+    fontFamily: Typography.family.regular,
+    color: Theme.mutedForeground,
+  },
+  cardArrow: {
+    fontSize: Typography.size.xl,
+    color: Theme.mutedForeground,
   },
 });
-

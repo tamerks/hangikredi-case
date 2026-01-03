@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import LoginScreen from '../screens/auth/LoginScreen';
-import MainTabNavigator from './MainTabNavigator';
-import { onAuthStateChange } from '../services/authService';
-import { DefaultColors } from '../constants/DefaultColors';
+import React, { useState, useEffect } from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import LoginScreen from "../screens/auth/LoginScreen";
+import MainTabNavigator from "./MainTabNavigator";
+import { onAuthStateChange } from "../services/authService";
+import { Theme } from "../constants/Theme";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,7 +24,7 @@ export default function RootNavigator() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={DefaultColors.primary} />
+        <ActivityIndicator size="large" color={Theme.primary} />
       </View>
     );
   }
@@ -34,16 +34,11 @@ export default function RootNavigator() {
       initialRouteName={user ? "MainTabs" : "Login"}
       screenOptions={{
         headerShown: false,
+        contentStyle: { backgroundColor: Theme.background },
       }}
     >
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-      />
-      <Stack.Screen
-        name="MainTabs"
-        component={MainTabNavigator}
-      />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="MainTabs" component={MainTabNavigator} />
     </Stack.Navigator>
   );
 }
@@ -51,9 +46,8 @@ export default function RootNavigator() {
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Theme.background,
   },
 });
-

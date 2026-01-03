@@ -1,16 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { 
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import {
   addItem,
-  removeItem, 
-  removeItemCompletely, 
+  removeItem,
+  removeItemCompletely,
   clearCart,
   selectMarketCartItems,
-  selectMarketCartTotal 
-} from '../../redux/slices/marketCartSlice';
-import Toast from 'react-native-toast-message';
-import { DefaultColors } from '../../constants/DefaultColors';
+  selectMarketCartTotal,
+} from "../../redux/slices/marketCartSlice";
+import Toast from "react-native-toast-message";
+import { Theme, Typography, Spacing, Radius } from "../../constants/Theme";
 
 export default function MarketSepet({ navigation }) {
   const dispatch = useDispatch();
@@ -20,45 +26,27 @@ export default function MarketSepet({ navigation }) {
   const handleComplete = () => {
     if (items.length === 0) {
       Toast.show({
-        type: 'info',
-        text1: 'Sepet Boş',
-        text2: 'Sepetinizde ürün bulunmamaktadır',
-        visibilityTime: 2000,
+        type: "info",
+        text1: "Sepet Boş",
+        text2: "Sepetinizde ürün bulunmamaktadır",
       });
       return;
     }
 
-    dispatch(clearCart());
-    Toast.show({
-      type: 'success',
-      text1: 'Sipariş Tamamlandı',
-      text2: 'Siparişiniz başarıyla tamamlandı',
-      visibilityTime: 2000,
-    });
-    
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'MainTabs' }],
+    navigation.navigate("OdemeEkrani", {
+      totalAmount: total.toFixed(2),
+      type: "market",
     });
   };
 
-  const handleIncrease = (itemId) => {
-    const item = items.find(i => i.id === itemId);
-    if (item) {
-      dispatch(addItem({ id: item.id, name: item.name, price: item.price }));
-    }
+  const handleIncrease = (item) => {
+    dispatch(addItem({ id: item.id, name: item.name, price: item.price }));
   };
 
   const handleDecrease = (itemId) => {
-    const item = items.find(i => i.id === itemId);
+    const item = items.find((i) => i.id === itemId);
     if (item && item.quantity === 1) {
       dispatch(removeItem(itemId));
-      Toast.show({
-        type: 'info',
-        text1: 'Sepetten Çıkarıldı',
-        text2: `${item.name} sepetten çıkarıldı`,
-        visibilityTime: 2000,
-      });
     } else {
       dispatch(removeItem(itemId));
     }
@@ -67,68 +55,93 @@ export default function MarketSepet({ navigation }) {
   const handleRemove = (itemId) => {
     dispatch(removeItemCompletely(itemId));
     Toast.show({
-      type: 'success',
-      text1: 'Ürün Silindi',
-      text2: 'Ürün sepetten kaldırıldı',
-      visibilityTime: 2000,
+      type: "success",
+      text1: "Ürün Silindi",
+      text2: "Ürün sepetten kaldırıldı",
     });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Market Sepeti</Text>
-      <Text style={styles.subtitle}>Siparişinizi kontrol edin</Text>
-      
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Market Sepeti</Text>
+        <Text style={styles.subtitle}>
+          {items.length > 0
+            ? `${items.length} farklı ürün`
+            : "Henüz ürün eklenmedi"}
+        </Text>
+      </View>
+
       {items.length === 0 ? (
         <View style={styles.emptyContainer}>
+          <Text style={styles.emptyIcon}>🛍️</Text>
           <Text style={styles.emptyText}>Sepetiniz boş</Text>
+          <TouchableOpacity
+            style={styles.browseButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.browseButtonText}>Alışverişe Başla</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <>
-          <ScrollView style={styles.scrollView}>
-            <View style={styles.sepetContainer}>
-              {items.map((item) => (
-                <View key={item.id} style={styles.itemRow}>
-                  <View style={styles.itemInfo}>
-                    <Text style={styles.itemName}>{item.name}</Text>
-                    <Text style={styles.itemPrice}>₺{item.price}</Text>
-                  </View>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {items.map((item) => (
+              <View key={item.id} style={styles.itemRow}>
+                <View style={styles.itemInfo}>
+                  <Text style={styles.itemName}>{item.name}</Text>
+                  <Text style={styles.itemPrice}>₺{item.price}</Text>
+                </View>
+
+                <View style={styles.actionsContainer}>
                   <View style={styles.quantityContainer}>
                     <TouchableOpacity
                       style={styles.quantityButton}
                       onPress={() => handleDecrease(item.id)}
                     >
-                      <Text style={styles.quantityButtonText}>-</Text>
+                      <Text style={styles.quantityButtonText}>−</Text>
                     </TouchableOpacity>
+
                     <Text style={styles.quantityText}>{item.quantity}</Text>
+
                     <TouchableOpacity
                       style={styles.quantityButton}
-                      onPress={() => handleIncrease(item.id)}
+                      onPress={() => handleIncrease(item)}
                     >
                       <Text style={styles.quantityButtonText}>+</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.removeButton}
-                      onPress={() => handleRemove(item.id)}
-                    >
-                      <Text style={styles.removeButtonText}>✕</Text>
-                    </TouchableOpacity>
                   </View>
+
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => handleRemove(item.id)}
+                  >
+                    <Text style={styles.removeButtonText}>Sil</Text>
+                  </TouchableOpacity>
                 </View>
-              ))}
-            </View>
+              </View>
+            ))}
           </ScrollView>
-          
-          <View style={styles.totalContainer}>
-            <Text style={styles.total}>Toplam: ₺{total.toFixed(2)}</Text>
+
+          <View style={styles.footer}>
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Toplam Tutar</Text>
+              <Text style={styles.totalAmount}>₺{total.toFixed(2)}</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.checkoutButton}
+              onPress={handleComplete}
+              activeOpacity={0.9}
+            >
+              <Text style={styles.checkoutButtonText}>Siparişi Onayla</Text>
+            </TouchableOpacity>
           </View>
-          
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleComplete}
-          >
-            <Text style={styles.buttonText}>Siparişi Tamamla</Text>
-          </TouchableOpacity>
         </>
       )}
     </View>
@@ -138,120 +151,155 @@ export default function MarketSepet({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
+    backgroundColor: Theme.background,
+  },
+  header: {
+    padding: Spacing.xl,
+    borderBottomWidth: 1,
+    borderBottomColor: Theme.border,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: DefaultColors.text,
+    fontSize: Typography.size.xxl,
+    fontFamily: Typography.family.bold,
+    color: Theme.foreground,
+    marginBottom: Spacing.xs,
   },
   subtitle: {
-    fontSize: 16,
-    marginBottom: 30,
-    color: DefaultColors.textSecondary,
+    fontSize: Typography.size.sm,
+    fontFamily: Typography.family.regular,
+    color: Theme.mutedForeground,
   },
   scrollView: {
     flex: 1,
   },
-  sepetContainer: {
-    backgroundColor: DefaultColors.background,
-    padding: 20,
-    borderRadius: 8,
-    marginBottom: 20,
+  scrollContent: {
+    padding: Spacing.xl,
+    gap: Spacing.md,
   },
   itemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: DefaultColors.border,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.lg,
+    backgroundColor: Theme.card,
+    borderWidth: 1,
+    borderColor: Theme.border,
+    borderRadius: Radius.lg,
   },
   itemInfo: {
     flex: 1,
+    marginRight: Spacing.md,
   },
   itemName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: DefaultColors.text,
-    marginBottom: 5,
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.semiBold,
+    color: Theme.foreground,
+    marginBottom: Spacing.xs,
   },
   itemPrice: {
-    fontSize: 14,
-    color: DefaultColors.textSecondary,
+    fontSize: Typography.size.sm,
+    fontFamily: Typography.family.medium,
+    color: Theme.mutedForeground,
+  },
+  actionsContainer: {
+    alignItems: "flex-end",
+    gap: Spacing.sm,
   },
   quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Theme.secondary,
+    borderRadius: Radius.md,
+    padding: 2,
   },
   quantityButton: {
-    backgroundColor: DefaultColors.secondary,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 28,
+    height: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: Radius.sm,
   },
   quantityButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.medium,
+    color: Theme.foreground,
   },
   quantityText: {
-    fontSize: 16,
-    fontWeight: '600',
-    minWidth: 30,
-    textAlign: 'center',
-    color: DefaultColors.text,
+    fontSize: Typography.size.sm,
+    fontFamily: Typography.family.semiBold,
+    color: Theme.foreground,
+    minWidth: 24,
+    textAlign: "center",
   },
   removeButton: {
-    backgroundColor: DefaultColors.error,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 5,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
   },
   removeButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: Typography.size.xs,
+    fontFamily: Typography.family.medium,
+    color: Theme.destructive,
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    padding: Spacing.xxl,
+  },
+  emptyIcon: {
+    fontSize: 48,
+    marginBottom: Spacing.lg,
+    opacity: 0.5,
   },
   emptyText: {
-    fontSize: 18,
-    color: DefaultColors.textSecondary,
+    fontSize: Typography.size.lg,
+    fontFamily: Typography.family.medium,
+    color: Theme.mutedForeground,
+    marginBottom: Spacing.xl,
   },
-  totalContainer: {
-    paddingVertical: 15,
+  browseButton: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+    backgroundColor: Theme.secondary,
+    borderRadius: Radius.md,
+  },
+  browseButtonText: {
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.semiBold,
+    color: Theme.foreground,
+  },
+  footer: {
+    padding: Spacing.xl,
+    backgroundColor: Theme.background,
     borderTopWidth: 1,
-    borderTopColor: DefaultColors.border,
+    borderTopColor: Theme.border,
   },
-  total: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: DefaultColors.secondary,
-    textAlign: 'right',
+  totalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: Spacing.lg,
   },
-  button: {
-    backgroundColor: DefaultColors.secondary,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
+  totalLabel: {
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.medium,
+    color: Theme.mutedForeground,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  totalAmount: {
+    fontSize: Typography.size.xxl,
+    fontFamily: Typography.family.bold,
+    color: Theme.foreground,
+  },
+  checkoutButton: {
+    backgroundColor: Theme.primary,
+    paddingVertical: Spacing.lg,
+    borderRadius: Radius.md,
+    alignItems: "center",
+  },
+  checkoutButtonText: {
+    fontSize: Typography.size.md,
+    fontFamily: Typography.family.semiBold,
+    color: Theme.primaryForeground,
   },
 });
-
